@@ -1,0 +1,23 @@
+
+<form method="get" action="{% url 'search_movies' %}">
+  <input type="text" name="q" value="{{ query }}" placeholder="Search movies">
+  <button type="submit">Search</button>
+</form>
+
+{% if movies %}
+  <div class="row">
+    {% for movie in movies %}
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ movie.title }}</h5>
+            <p>{{ movie.overview|truncatewords:10 }}</p>
+            <a href="{% url 'select_movie' md_id=movie.md_id %}" class="btn btn-primary">
+              Review This Movie
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
