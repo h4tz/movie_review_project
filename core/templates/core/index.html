@@ -1,23 +1,73 @@
+<!-- core/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie List</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+            color: #374151; /* Dark gray text */
+        }
+        /* Custom styles for focus/hover effects, if needed beyond Tailwind */
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.5); /* Indigo focus ring */
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 flex flex-col items-center">
+    <div class="w-full max-w-4xl bg-white shadow-lg rounded-lg p-8 mb-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Search Movies</h1>
+        
+        {# Search Form #}
+        <form method="get" action="{% url 'search_movies' %}" class="flex flex-col sm:flex-row gap-4 mb-8 items-center justify-center">
+            <input 
+                type="text" 
+                name="q" 
+                value="{{ query|default:'' }}" {# Use default filter for empty query #}
+                placeholder="Search movies by title..."
+                class="search-input flex-grow px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:w-2/3 w-full"
+            >
+            <button 
+                type="submit" 
+                class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-md transition duration-300 ease-in-out transform hover:scale-105 shadow-md w-full sm:w-auto"
+            >
+                Search
+            </button>
+        </form>
+    </div>
 
-<form method="get" action="{% url 'search_movies' %}">
-  <input type="text" name="q" value="{{ query }}" placeholder="Search movies">
-  <button type="submit">Search</button>
-</form>
-
-{% if movies %}
-  <div class="row">
-    {% for movie in movies %}
-      <div class="col-md-4 mb-4">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">{{ movie.title }}</h5>
-            <p>{{ movie.overview|truncatewords:10 }}</p>
-            <a href="{% url 'select_movie' md_id=movie.md_id %}" class="btn btn-primary">
-              Review This Movie
-            </a>
-          </div>
+    {# Movie List #}
+    {% if movies %}
+        <div class="w-full max-w-4xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for movie in movies %}
+                <div class="bg-white shadow-md rounded-lg overflow-hidden transition duration-300 ease-in-out transform hover:scale-102 hover:shadow-xl flex flex-col">
+                    <div class="p-6 flex-grow">
+                        <h5 class="text-xl font-semibold text-gray-900 mb-2">{{ movie.title|default:"Untitled Movie" }}</h5>
+                        {# Optional: Add release date if available in your movie object #}
+                        {% if movie.release_date %}
+                            <p class="text-sm text-gray-500 mb-3">Released: {{ movie.release_date }}</p>
+                        {% endif %}
+                        <p class="text-gray-700 text-base leading-relaxed">{{ movie.overview|default:"No overview available."|truncatewords:15 }}</p>
+                    </div>
+                    <div class="p-6 border-t border-gray-200">
+                        <a href="{% url 'select_movie' md_id=movie.md_id %}" class="block w-full text-center bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out">
+                            Review This Movie
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-      </div>
-    {% endfor %}
-  </div>
-{% endif %}
+    {% else %}
+        <div class="text-center text-gray-600 mt-8">
+            <p class="text-lg">No movies to display. Try searching for one!</p>
+        </div>
+    {% endif %}
+</body>
+</html>
