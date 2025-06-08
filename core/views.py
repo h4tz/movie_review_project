@@ -2,6 +2,45 @@ from django.shortcuts import render , redirect
 import requests
 from .models import Movie
 from django.urls import reverse
+from django.contrib.auth.forms import UserCreationForm # Django's built-in form for user registration
+from django.contrib import messages # For displaying success/error messages to the user
+
+
+
+
+
+def register(request):
+    """
+    Handles user registration.
+    - If GET request: Displays an empty UserCreationForm.
+    - If POST request: Processes the submitted form.
+      - If valid: Saves the new user, displays a success message, and redirects to the login page.
+      - If invalid: Redisplays the form with validation errors.
+    """
+    if request.method == 'POST':
+        # Create a form instance with the submitted POST data
+        form = UserCreationForm(request.POST)
+        # Check if the form data is valid
+        if form.is_valid():
+            # Save the new user to the database
+            form.save()
+            # Get the username from the cleaned (validated) form data
+            username = form.cleaned_data.get('username')
+            # Add a success message to be displayed on the next page
+            messages.success(request, f'Account created for {username}! You can now log in.')
+            # Redirect the user to the login page
+            return redirect('login') # 'login' is the name of your login URL pattern
+    else:
+        # For GET requests, create an empty form
+        form = UserCreationForm()
+    
+    # Render the registration template, passing the form context
+    return render(request, 'registration/register.html', {'form': form})
+
+
+
+
+
 
 def search_movies(request):
     query = request.GET.get('q', '')
