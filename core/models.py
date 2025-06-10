@@ -8,4 +8,5 @@ class Movie(models.Model):
     release_date = models.DateField(blank=True, null=True)
     poster_url = models.URLField()
     
-    
+    def __str__(self):
+        return  self.md_id

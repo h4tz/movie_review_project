@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path , include
-from core.views import search_movies , select_movie
+from core.views import search_movies , select_movie , register
 from reviews.views import ReviewViewSet , review_movie, review_success , review_detail , movie_list_view
 from rest_framework.routers import DefaultRouter
 
@@ -27,7 +27,7 @@ router.register(r'reviews', ReviewViewSet )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('search-movies/', search_movies, name = 'search_movies'),
+    path('', search_movies, name = 'search_movies'),
     path('api/', include(router.urls)),
     path('select-movie/<str:md_id>/', select_movie, name='select_movie'),
     path('review-movie/<str:md_id>/', review_movie, name='review_movie'),
@@ -35,5 +35,6 @@ urlpatterns = [
     path('review-success/', review_success, name='review_success'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('movie/<str:md_id>/', movie_list_view , name = 'movie_detail' ),
+    path('accounts/register/', register, name='register'),
     
 ]

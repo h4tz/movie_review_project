@@ -16,4 +16,4 @@ class Review(models.Model):
         unique_together = ('user', 'movie')
         
     def __str__(self):
-        return F'Review by {self.user.username} for {self.movie.title} - {self.rating} stars '
+        return F'Review by {self.user.username} for {self.movie.title} - {self.rating} stars {self.movie.md_id} '
